@@ -22,6 +22,26 @@ interface FindMany {
   skip?: number;
 }
 
+
+function debounce<F extends (...args: any[]) => void>(f: F, ms: number) {
+  let isCooldown = false;
+
+  return function (...args: Parameters<F>) {
+    if (isCooldown) return;
+    f.apply(this, args);
+    isCooldown = true;
+    setTimeout(() => (isCooldown = false), ms);
+  };
+}
+
+function fun(name: string) {
+  console.log('Привет ' + name);
+}
+const f = debounce(fun, 1000);
+
+
+
+
 @Injectable()
 export class OrderService {
   constructor(
