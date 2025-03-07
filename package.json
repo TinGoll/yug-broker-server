@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-firebird": "^1.1.9"
+  }
+}

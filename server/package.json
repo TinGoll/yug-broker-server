@@ -28,7 +28,7 @@
     "@nestjs/serve-static": "^3.0.1",
     "@nestjs/typeorm": "^9.0.1",
     "better-sqlite3": "^7.6.2",
-    "node-firebird": "^1.0.0",
+    "node-firebird": "^1.1.9",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
