@@ -11,7 +11,7 @@ import { ItmManagerModule } from './modules/itm-manager/itm-manager.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', "..", 'client', 'build'),
+      rootPath: join(__dirname, '..', '..', 'client', 'build'),
       exclude: ['/api/(.*)'],
     }),
     ConfigModule.forRoot({

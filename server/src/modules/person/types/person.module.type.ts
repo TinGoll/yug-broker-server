@@ -1,7 +1,7 @@
 import { PersonRole } from '../enums/person-role';
 import { UserRole } from '../enums/user-role';
 
-declare module Person {
+declare namespace Person {
   interface PersonType {
     id: number;
     firstName: string;

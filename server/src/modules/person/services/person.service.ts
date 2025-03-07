@@ -41,8 +41,6 @@ export class PersonService {
       result.push(...usersDb);
     }
 
-    db.detach();
-
     return result.map((res) => this.converter(res, type));
   }
 
@@ -77,7 +75,6 @@ export class PersonService {
       result = userDb;
     }
 
-    db.detach();
     return <T>this.converter(result, type);
   }
 

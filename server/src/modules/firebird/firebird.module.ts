@@ -14,7 +14,10 @@ export class FirebirdModule {
         ...options,
         host: configService.get<string>('FIREBIRD_HOST', 'localhost'),
         port: configService.get<number>('FIREBIRD_PORT', 3050),
-        database: configService.get<string>('FIREBIRD_DATABASE', 'F:/javascript/massiv-yug/db/ITM_DB.FDB'),
+        database: configService.get<string>(
+          'FIREBIRD_DATABASE',
+          'F:/javascript/massiv-yug/db/ITM_DB.FDB',
+        ),
         user: configService.get<string>('FIREBIRD_USER', 'SYSDBA'),
         password: configService.get<string>('FIREBIRD_PASSWORD', 'masterkey'),
       }),

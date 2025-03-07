@@ -13,11 +13,10 @@ where P.ORDER_ID = 17000
  */
 
 export class OrderRequest implements IRequest<ItmOrderDb> {
-
-  private _one: boolean = true;
-  private _limit: number = 1;
+  private _one = true;
+  private _limit = 1;
   private _orderBy = null;
-  private _skip: number = 0;
+  private _skip = 0;
   private _where: { options: Partial<ItmOrderDb>; like: boolean } = {
     options: {},
     like: false,
@@ -36,9 +35,7 @@ export class OrderRequest implements IRequest<ItmOrderDb> {
   left join JOURNAL_STATUSES JS on (JS.ID = GET_JSTATUS_ID(O.ID)) 
   $WHERE$ $ORDER_BY$`;
 
-  private planRequest = ``
-
-
+  private planRequest = ``;
 
   skip(value: number): this {
     if (!isNaN(value)) {
@@ -54,7 +51,7 @@ export class OrderRequest implements IRequest<ItmOrderDb> {
     this._one = false;
     return this;
   }
-  where(options: Partial<ItmOrderDb>, like: boolean = true): this {
+  where(options: Partial<ItmOrderDb>, like = true): this {
     if (typeof options === 'object') {
       this._where = {
         options: { ...options },

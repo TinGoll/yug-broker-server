@@ -22,7 +22,6 @@ interface FindMany {
   skip?: number;
 }
 
-
 function debounce<F extends (...args: any[]) => void>(f: F, ms: number) {
   let isCooldown = false;
 
@@ -38,9 +37,6 @@ function fun(name: string) {
   console.log('Привет ' + name);
 }
 const f = debounce(fun, 1000);
-
-
-
 
 @Injectable()
 export class OrderService {
@@ -72,7 +68,7 @@ export class OrderService {
         [dbOrder.ID],
       );
 
-      db.detach();
+      this.firebirdService.detach();
 
       return this.converter.dbDataToOrder(dbOrder, plans, elements);
     } catch (e) {
@@ -92,11 +88,8 @@ export class OrderService {
     console.log(request);
     const db = await this.firebirdService.attach();
     const dbData = await db.executeAndReturning<ItmOrderDb[]>(request);
-    db.detach();
     console.log(JSON.stringify(dbData, null, 2));
     return;
-
-    return [];
   }
 
   async create(params: ItmOrder) {}

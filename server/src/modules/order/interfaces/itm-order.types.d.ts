@@ -135,7 +135,6 @@ export interface ItmOrderResult {
   generalSquare: number;
   fasadeSquare: number;
   elementCount: number;
-
 }
 
 export interface ItmOrderPayments {
