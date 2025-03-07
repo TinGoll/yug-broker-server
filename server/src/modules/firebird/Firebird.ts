@@ -97,4 +97,14 @@ export class Firebird {
   detach() {
     this.db.detach();
   }
+
+  close(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.db) return resolve();
+      this.db.detach((err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
 }
