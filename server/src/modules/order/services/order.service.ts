@@ -68,7 +68,7 @@ export class OrderService {
         [dbOrder.ID],
       );
 
-      this.firebirdService.detach();
+      // this.firebirdService.detach();
 
       return this.converter.dbDataToOrder(dbOrder, plans, elements);
     } catch (e) {

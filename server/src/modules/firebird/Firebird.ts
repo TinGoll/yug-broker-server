@@ -1,12 +1,6 @@
-import {
-  FirebirdDatabaseOperation,
-  FirebirdConnectionOptions,
-  FirebirdResult,
-  TransCallback,
-  EventCallback,
-} from './firebird-types';
 // import NodeFirebird from 'node-firebird';
 import * as NodeFirebird from 'node-firebird';
+import { Database, ISOLATION_READ_COMMITTED, Options, TransactionCallback} from 'node-firebird';
 
 export enum FirebirdEvents {
   row = 'row',
@@ -21,10 +15,10 @@ export enum FirebirdEvents {
 }
 
 export class Firebird {
-  private db!: FirebirdDatabaseOperation;
-  private options: FirebirdConnectionOptions;
+  private db!: Database;
+  private options: Options;
 
-  constructor(options: FirebirdConnectionOptions) {
+  constructor(options: Options) {
     this.options = options;
   }
 
@@ -33,7 +27,7 @@ export class Firebird {
       return new Promise((resolve, reject) => {
         NodeFirebird.attachOrCreate(
           this.options,
-          (err: Error, db: FirebirdDatabaseOperation) => {
+          (err: Error, db: Database) => {
             if (err) reject(err);
             this.db = db;
             resolve(this);
@@ -73,7 +67,7 @@ export class Firebird {
   execute(query: string, params: any[] = []): Promise<void> {
     try {
       return new Promise((resolve, reject) => {
-        this.db.query(query, params, (err: Error, res: FirebirdResult[]) => {
+        this.db.query(query, params, (err: Error, res: any) => {
           if (err) reject(err);
           resolve();
         });
@@ -83,15 +77,11 @@ export class Firebird {
     }
   }
 
-  startTransaction(transactionCallback: TransCallback) {
+  startTransaction(transactionCallback: TransactionCallback) {
     this.db.transaction(
-      NodeFirebird.ISOLATION_READ_COMMITED,
+      ISOLATION_READ_COMMITTED,
       transactionCallback,
     );
-  }
-
-  on(event: FirebirdEvents, eventCallback: EventCallback) {
-    this.db.on(event, eventCallback);
   }
 
   detach() {
@@ -106,5 +96,9 @@ export class Firebird {
         resolve();
       });
     });
+  }
+
+  getDb(): Database {
+    return this.db;
   }
 }
