@@ -1,7 +1,7 @@
 import { Injectable, Inject, OnModuleDestroy } from '@nestjs/common';
 import { Firebird } from './Firebird';
 import { FIREBIRD_OPTIONS, FirebirdOptions } from './firebird-constants';
-import { Database, ISOLATION_READ_COMMITTED, Transaction } from 'node-firebird';
+import { Transaction } from 'node-firebird';
 
 @Injectable()
 export class FirebirdService implements OnModuleDestroy {
@@ -22,10 +22,9 @@ export class FirebirdService implements OnModuleDestroy {
   }
 
   async startTransaction(transactionCallback: (db: Transaction) => Promise<void>): Promise<void> {
-    const db = await this.attach(); // Получаем текущее соединение
+    const db = await this.attach();
 
     return new Promise((resolve, reject) => {
-      // Используем startTransaction из Firebird класса
       db.startTransaction((err: Error, transactionDb: Transaction) => {
         if (err) {
           reject(err);
@@ -49,17 +48,16 @@ export class FirebirdService implements OnModuleDestroy {
                 if (rollbackErr) {
                   reject(rollbackErr);
                 } else {
-                  reject(err); // Ошибка внутри транзакции
+                  reject(err);
                 }
               });
             });
         } catch (e) {
-          // В случае ошибки откатываем транзакцию
           transactionDb.rollback((rollbackErr: Error) => {
             if (rollbackErr) {
               reject(rollbackErr);
             } else {
-              reject(e); // Ошибка внутри транзакции
+              reject(e);
             }
           });
         }
