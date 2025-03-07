@@ -20,8 +20,4 @@ export class FirebirdService {
       throw e;
     }
   }
-
-  getOptions(): FirebirdOptions {
-    return { ...this.firebirdOptions };
-  }
 }

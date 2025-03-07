@@ -16,17 +16,13 @@ import { ItmManagerModule } from './modules/itm-manager/itm-manager.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        type: config.get<'postgres'>('TYPEORM_CONNECTION'),
-        // host: config.get<string>('TYPEORM_HOST'),
-        // port: config.get<number>('TYPEORM_PORT'),
-        // username: config.get<string>('TYPEORM_USERNAME'),
-        // password: config.get<string>('TYPEORM_PASSWORD'),
+        type: 'better-sqlite3',
         database: config.get<string>('TYPEORM_DATABASE'),
         entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
         migrations: [__dirname + 'src/migrations/*{.js,.ts}'],
