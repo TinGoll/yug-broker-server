@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dayjs": "^1.11.13",
     "node-firebird": "^1.1.9"
   }
 }
