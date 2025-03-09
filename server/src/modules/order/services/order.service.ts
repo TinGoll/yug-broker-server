@@ -11,7 +11,10 @@ import {
 } from '../interfaces/itm-order.types';
 import orderRequest from '../requests/order.request';
 import { Converter } from './converter';
-import { getCreateOrderElementRequestParams, getCreateOrderRequestParams } from '../requests/order-create.request';
+import {
+  getCreateOrderElementRequestParams,
+  getCreateOrderRequestParams,
+} from '../requests/order-create.request';
 import { getUpdateOrderRequestParams } from '../requests/order-update.request';
 
 interface Where extends Partial<ItmOrderDb> {
@@ -111,7 +114,6 @@ export class OrderService {
     //     },
     //   ]
     // }).then((result) => {
-
     // });
   }
 
@@ -160,13 +162,18 @@ export class OrderService {
 
   async generateOrderID(): Promise<number> {
     const db = await this.firebirdService.attach();
-    const [result] = await db.executeAndReturning<[{ ORDER_ID: number }]>('select gen_id (gen_orders_id,1) as ORDER_ID from rdb$database');
+    const [result] = await db.executeAndReturning<[{ ORDER_ID: number }]>(
+      'select gen_id (gen_orders_id,1) as ORDER_ID from rdb$database',
+    );
     return result.ORDER_ID;
   }
 
   async isOrderExists(orderID: number | string): Promise<boolean> {
     const db = await this.firebirdService.attach();
-    const [result] = await db.executeAndReturning<[{ ID: number; }]>('select o.id from orders o where o.id = ?', [orderID]);
+    const [result] = await db.executeAndReturning<[{ ID: number }]>(
+      'select o.id from orders o where o.id = ?',
+      [orderID],
+    );
     return Boolean(result?.ID);
   }
 
@@ -181,15 +188,22 @@ export class OrderService {
           const orderID = await this.generateOrderID();
           const paramsWithID = { ...params, id: orderID };
           const request = getCreateOrderRequestParams(paramsWithID);
-          const result = await transaction.executeAndReturning<{ ID: number; }>(...request);
+          const result = await transaction.executeAndReturning<{ ID: number }>(
+            ...request,
+          );
 
           if (!result?.ID) {
             throw new HttpException('Не удалось создать новый заказ', 500);
           }
           const elements = paramsWithID.elements || [];
           for (const elemetParams of elements) {
-            const elementParamsWithOrderID = { ...elemetParams, orderId: orderID };
-            const elementRequest = getCreateOrderElementRequestParams(elementParamsWithOrderID);
+            const elementParamsWithOrderID = {
+              ...elemetParams,
+              orderId: orderID,
+            };
+            const elementRequest = getCreateOrderElementRequestParams(
+              elementParamsWithOrderID,
+            );
             await transaction.executeAndReturning(...elementRequest);
           }
 
@@ -200,8 +214,8 @@ export class OrderService {
           reject(e);
         }
       });
-    })
-  };
+    });
+  }
 
   async update(params: UpdateItmOrderIn) {
     const db = await this.firebirdService.attach();
@@ -217,17 +231,28 @@ export class OrderService {
           }
           const isExists = await this.isOrderExists(orderID);
           if (!isExists) {
-            throw new HttpException(`Заказ ID ${orderID} не найден в базе данных`, 404)
+            throw new HttpException(
+              `Заказ ID ${orderID} не найден в базе данных`,
+              404,
+            );
           }
 
           const request = getUpdateOrderRequestParams(params);
-          await transaction.executeAndReturning<{ ID: number; }>(...request);
-          await transaction.execute('delete from orders_elements e where  e.order_id = ?', [orderID]);
+          await transaction.executeAndReturning<{ ID: number }>(...request);
+          await transaction.execute(
+            'delete from orders_elements e where  e.order_id = ?',
+            [orderID],
+          );
 
           const elements = params.elements || [];
           for (const elemetParams of elements) {
-            const elementParamsWithOrderID = { ...elemetParams, orderId: orderID };
-            const elementRequest = getCreateOrderElementRequestParams(elementParamsWithOrderID);
+            const elementParamsWithOrderID = {
+              ...elemetParams,
+              orderId: orderID,
+            };
+            const elementRequest = getCreateOrderElementRequestParams(
+              elementParamsWithOrderID,
+            );
             await transaction.executeAndReturning(...elementRequest);
           }
 
@@ -237,16 +262,18 @@ export class OrderService {
           await transaction.rollback();
           reject(e);
         }
-      })
-    )
-  };
+      }),
+    );
+  }
 
   async delete(id: number) {
     const db = await this.firebirdService.attach();
     const isExists = await this.isOrderExists(id);
     if (!isExists) {
-      throw new HttpException(`Заказ ID ${id} не найден в базе данных`, 404)
+      throw new HttpException(`Заказ ID ${id} не найден в базе данных`, 404);
     }
-    await db.execute('UPDATE orders o SET o.order_status = -9 WHERE o.id = ?', [id]);
+    await db.execute('UPDATE orders o SET o.order_status = -9 WHERE o.id = ?', [
+      id,
+    ]);
   }
 }

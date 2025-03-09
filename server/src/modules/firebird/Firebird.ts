@@ -67,12 +67,9 @@ export class Firebird {
   startTransaction(
     transactionCallback: (err: any, transaction: FirebirdTransaction) => void,
   ) {
-    this.db.transaction(
-      ISOLATION_READ_COMMITTED,
-      async (err, transaction) => {
-        transactionCallback(err, new FirebirdTransaction(transaction));
-      },
-    );
+    this.db.transaction(ISOLATION_READ_COMMITTED, async (err, transaction) => {
+      transactionCallback(err, new FirebirdTransaction(transaction));
+    });
   }
 
   detach() {

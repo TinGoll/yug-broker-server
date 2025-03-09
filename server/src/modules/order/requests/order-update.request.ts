@@ -1,4 +1,11 @@
-import { CreateItmElementIn, CreateItmOrderIn, ItmOrderDb, ItmOrderElementDb, SaveItmOrderIn, UpdateItmOrderIn } from '../interfaces/itm-order.types';
+import {
+  CreateItmElementIn,
+  CreateItmOrderIn,
+  ItmOrderDb,
+  ItmOrderElementDb,
+  SaveItmOrderIn,
+  UpdateItmOrderIn,
+} from '../interfaces/itm-order.types';
 
 type OrderDbField = keyof Omit<
   ItmOrderDb,
@@ -15,15 +22,12 @@ type OrderDbField = keyof Omit<
   | 'SECTOR'
   | 'STATUS'
   | 'JSTATUS'
-  | "ID"
+  | 'ID'
 >;
-
 
 type UpdateOrder = (params: UpdateItmOrderIn) => [string, any[]];
 
-export const getUpdateOrderRequestParams: UpdateOrder = (
-  params,
-) => {
+export const getUpdateOrderRequestParams: UpdateOrder = (params) => {
   const fieldMap: Record<OrderDbField, string | number> = {
     MANAGER: params.author?.userName,
     CLIENT: params.client?.name,
@@ -77,8 +81,8 @@ export const getUpdateOrderRequestParams: UpdateOrder = (
       params.profile?.prisadka === true
         ? 'есть'
         : params.profile?.prisadka === false
-          ? 'нет'
-          : null,
+        ? 'нет'
+        : null,
     PLAN_DATE_FIRSTSTAGE: params.dates?.planFirstStage,
     PLAN_DATE_PACK: params.dates?.package,
     FILEPATH_CALC_CLIENT: null,
@@ -89,8 +93,8 @@ export const getUpdateOrderRequestParams: UpdateOrder = (
       params.profile?.termoshov === true
         ? 'есть'
         : params.profile?.termoshov === false
-          ? 'нет'
-          : null,
+        ? 'нет'
+        : null,
     ASSEMBLY_ANGLE: params.profile?.angle,
   };
 

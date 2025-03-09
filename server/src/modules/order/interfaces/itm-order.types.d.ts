@@ -261,9 +261,9 @@ interface ItmOrder {
   elements: ItmElement[];
 }
 
-export interface SaveItmOrderIn extends DeepPartial<ItmOrder> { }
+export type SaveItmOrderIn = DeepPartial<ItmOrder>;
 export interface UpdateItmOrderIn extends DeepPartial<ItmOrder> {
   id: number;
 }
-export interface CreateItmOrderIn extends DeepPartial<ItmOrder> { }
-export interface CreateItmElementIn extends DeepPartial<ItmElement> { }
+export type CreateItmOrderIn = DeepPartial<ItmOrder>;
+export type CreateItmElementIn = DeepPartial<ItmElement>;

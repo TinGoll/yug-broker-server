@@ -1,4 +1,10 @@
-import { CreateItmElementIn, CreateItmOrderIn, ItmOrderDb, ItmOrderElementDb, SaveItmOrderIn } from '../interfaces/itm-order.types';
+import {
+  CreateItmElementIn,
+  CreateItmOrderIn,
+  ItmOrderDb,
+  ItmOrderElementDb,
+  SaveItmOrderIn,
+} from '../interfaces/itm-order.types';
 
 type OrderDbField = keyof Omit<
   ItmOrderDb,
@@ -40,18 +46,21 @@ export const getCreateOrderElementRequestParams: CreateElement = (params) => {
 
   const entries = Object.entries(fieldMap);
   const request = `
-            INSERT INTO orders_elements (${entries.map((entry) => `"${entry[0]}"`).join(', ')}) 
+            INSERT INTO orders_elements (${entries
+              .map((entry) => `"${entry[0]}"`)
+              .join(', ')}) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
 
-  return [request, entries.map((entry) => {
-    return Boolean(entry[1]) && entry[1] !== 'undefined' ? entry[1] : null;
-  }),]
-}
+  return [
+    request,
+    entries.map((entry) => {
+      return Boolean(entry[1]) && entry[1] !== 'undefined' ? entry[1] : null;
+    }),
+  ];
+};
 
-export const getCreateOrderRequestParams: CreateOrder = (
-  params,
-) => {
+export const getCreateOrderRequestParams: CreateOrder = (params) => {
   const fieldMap: Record<OrderDbField, string | number> = {
     ID: String(params.id),
     MANAGER: params.author?.userName,
@@ -106,8 +115,8 @@ export const getCreateOrderRequestParams: CreateOrder = (
       params.profile?.prisadka === true
         ? 'есть'
         : params.profile?.prisadka === false
-          ? 'нет'
-          : null,
+        ? 'нет'
+        : null,
     PLAN_DATE_FIRSTSTAGE: params.dates?.planFirstStage,
     PLAN_DATE_PACK: params.dates?.package,
     FILEPATH_CALC_CLIENT: null,
@@ -118,8 +127,8 @@ export const getCreateOrderRequestParams: CreateOrder = (
       params.profile?.termoshov === true
         ? 'есть'
         : params.profile?.termoshov === false
-          ? 'нет'
-          : null,
+        ? 'нет'
+        : null,
     ASSEMBLY_ANGLE: params.profile?.angle,
   };
 
