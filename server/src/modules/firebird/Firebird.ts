@@ -1,6 +1,12 @@
 // import NodeFirebird from 'node-firebird';
 import * as NodeFirebird from 'node-firebird';
-import { Database, ISOLATION_READ_COMMITTED, Options, TransactionCallback} from 'node-firebird';
+import {
+  Database,
+  ISOLATION_READ_COMMITTED,
+  Options,
+  TransactionCallback,
+} from 'node-firebird';
+import { FirebirdTransaction } from './FirebirdTransaction';
 
 export enum FirebirdEvents {
   row = 'row',
@@ -16,71 +22,56 @@ export enum FirebirdEvents {
 
 export class Firebird {
   private db!: Database;
-  private options: Options;
 
-  constructor(options: Options) {
-    this.options = options;
+  constructor(db: Database = null) {
+    this.db = db;
   }
 
-  create(): Promise<Firebird> {
-    try {
-      return new Promise((resolve, reject) => {
-        NodeFirebird.attachOrCreate(
-          this.options,
-          (err: Error, db: Database) => {
-            if (err) reject(err);
-            this.db = db;
-            resolve(this);
-          },
-        );
+  create(options: Options): Promise<Firebird> {
+    return new Promise((resolve, reject) => {
+      NodeFirebird.attachOrCreate(options, (err: Error, db: Database) => {
+        if (err) reject(err);
+        this.db = db;
+        resolve(this);
       });
-    } catch (e) {
-      throw e;
-    }
+    });
   }
 
   executeRequest<T>(query: string, params: any[] = []): Promise<T[]> {
-    try {
-      return new Promise((resolve, reject) => {
-        this.db.query(query, params, (err: Error, results: T[]) => {
-          if (err) reject(err);
-          resolve(results);
-        });
+    return new Promise((resolve, reject) => {
+      this.db.query(query, params, (err: Error, results: T[]) => {
+        if (err) reject(err);
+        resolve(results);
       });
-    } catch (e) {
-      throw e;
-    }
-  }
-  executeAndReturning<T>(query: string, params: any[] = []): Promise<T> {
-    try {
-      return new Promise((resolve, reject) => {
-        this.db.query(query, params, (err: Error, row: any) => {
-          if (err) reject(err);
-          const res: T = row;
-          resolve(res);
-        });
-      });
-    } catch (e) {
-      throw e;
-    }
-  }
-  execute(query: string, params: any[] = []): Promise<void> {
-    try {
-      return new Promise((resolve, reject) => {
-        this.db.query(query, params, (err: Error, res: any) => {
-          if (err) reject(err);
-          resolve();
-        });
-      });
-    } catch (e) {
-      throw e;
-    }
+    });
   }
 
-  startTransaction(transactionCallback: TransactionCallback) {
+  executeAndReturning<T>(query: string, params: any[] = []): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.db.query(query, params, (err: Error, row: any) => {
+        if (err) reject(err);
+        const res: T = row;
+        resolve(res);
+      });
+    });
+  }
+  execute(query: string, params: any[] = []): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db.query(query, params, (err: Error, res: any) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
+  startTransaction(
+    transactionCallback: (err: any, transaction: FirebirdTransaction) => void,
+  ) {
     this.db.transaction(
       ISOLATION_READ_COMMITTED,
-      transactionCallback,
+      async (err, transaction) => {
+        transactionCallback(err, new FirebirdTransaction(transaction));
+      },
     );
   }
 
