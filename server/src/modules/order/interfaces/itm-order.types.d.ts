@@ -1,4 +1,8 @@
-export declare interface ItmOrderDb {
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export interface ItmOrderDb {
   ID: number;
   MANAGER: string;
   CLIENT: string;
@@ -69,7 +73,7 @@ export declare interface ItmOrderDb {
   JSTATUS?: string;
 }
 
-export declare interface ItmOrderElementDb {
+export interface ItmOrderElementDb {
   ID: number;
   ORDER_ID: number;
   NAME: string;
@@ -86,7 +90,7 @@ export declare interface ItmOrderElementDb {
   CALC_COMMENT: string;
 }
 
-export declare interface ItmOrderDataPlanDb {
+export interface ItmOrderDataPlanDb {
   ID: number;
   ORDER_ID: number;
   DATE_SECTOR: string;
@@ -230,7 +234,7 @@ export interface ItmElement {
   payments: ItmElementPayments;
 }
 
-export declare interface ItmOrder {
+interface ItmOrder {
   id: number;
   author: ItmAuthor;
   client: ItmClient;
@@ -241,7 +245,7 @@ export declare interface ItmOrder {
   material: ItmMaterial;
   profile: ItmProfile;
   texture: ItmTexure;
-
+  glass: string;
   panel: ItmPanel;
   color: ItmColor;
   varnish: ItmVarnish;
@@ -256,3 +260,10 @@ export declare interface ItmOrder {
   location: ItmLocation;
   elements: ItmElement[];
 }
+
+export interface SaveItmOrderIn extends DeepPartial<ItmOrder> { }
+export interface UpdateItmOrderIn extends DeepPartial<ItmOrder> {
+  id: number;
+}
+export interface CreateItmOrderIn extends DeepPartial<ItmOrder> { }
+export interface CreateItmElementIn extends DeepPartial<ItmElement> { }

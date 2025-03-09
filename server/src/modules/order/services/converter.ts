@@ -183,6 +183,7 @@ export class Converter {
       id: dbData.ID,
       author: author,
       client: client,
+      glass: dbData.GLASS,
       clientNumber: dbData.ORDERNUM,
       itmOrderNumber: dbData.ITM_ORDERNUM,
       orderType: dbData.ORDER_TYPE,
