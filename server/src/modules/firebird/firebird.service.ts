@@ -9,7 +9,9 @@ export class FirebirdService implements OnModuleDestroy {
   constructor(
     @Inject(FIREBIRD_OPTIONS)
     private readonly firebirdOptions: FirebirdOptions,
-  ) {}
+  ) {
+    console.log('\x1b[33m%s\x1b[0m', 'firebirdOptions', firebirdOptions);
+  }
   async onModuleDestroy() {
     await this.detach();
   }
